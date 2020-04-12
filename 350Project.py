@@ -36,6 +36,7 @@ def main():
     PE = EVEN & PRIME & RR2star
     print("PE: {}".format(bdd2expr(PE)))
 
+    # step 3.5
     res = computeStatementA(PRIME, PE)
 
 
