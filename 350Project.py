@@ -20,7 +20,6 @@ def main():
     # step 3.3
     # find the transitive closure of RR2, RR2star
     RR2star = computeRR2star(RR2)
-    print(RR2star.is_one())
 
 
     return 0
@@ -193,13 +192,14 @@ def computeRR2star(RR2):
     H = RR2
     Hprime = H
 
-    # Hprime = H
-    # H = Hprime | compose(Hprime, RR2)
+    Hprime = H
+    H = compose(Hprime, RR2)
 
-    while H.equivalent(Hprime):
+    while Not(H.equivalent(Hprime)):
     #while H != Hprime:
         Hprime = H
-        H = Hprime | compose(Hprime, RR2)
+        H = (Hprime | compose(Hprime, RR2))
+        print(H)
 
     print("RR2star: {}".format(bdd2expr(H)))
 
