@@ -36,6 +36,9 @@ def main():
     PE = EVEN & PRIME & RR2star
     print("PE: {}".format(bdd2expr(PE)))
 
+    # step 3.5
+    res = computeStatementA(PRIME, PE)
+
 
     return 0
 
@@ -260,6 +263,18 @@ def compose(RR1, RR2):
     composite = (RR_1 & RR_2).smoothing(Z)
     #print("Composite: {}".format(composite))
     return composite
+
+# computes the final result we want
+def computeStatementA(PRIME, PE):
+    X = bddvars('x', 5)
+    Y = bddvars('y', 5)
+
+    # Boolean Formula given by prof zhe dang
+    SA = ~((~((~PRIME | PE).smoothing(Y))).smoothing(X))
+
+    print("Statment A results: {}".format(SA))
+
+    return SA
 
 if __name__ == "__main__":
     main()
