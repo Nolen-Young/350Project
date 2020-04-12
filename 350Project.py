@@ -8,6 +8,7 @@ def main():
 
     RR2 = RComposeR(RR)
 
+
     return 0
 
 # generates the EVEN BDD
@@ -150,18 +151,30 @@ def generateRR():
 
 ## return R composed R
 def RComposeR(RR):
+    # declare domain
+    X = bddvars('x', 5)
+    Y = bddvars('y', 5)
+    Z = bddvars('z', 5)
 
-    iterRR = list(RR.iter_relation())
-    for item in iterRR:
-        if item[1]:
-            print(item[0])
-            print(RR.smoothing(item[0]))
+    # use compose to rename two new RR BDDs.
+    RR_1 = RR.compose({X[0]: X[0], X[1]: X[1], X[2]: X[2], X[3]: X[3], X[4]: X[4],
+                      Y[0]: Z[0], Y[1]: Z[1], Y[2]: Z[2], Y[3]: Z[3], Y[4]: Z[4]})
+
+    RR_2 = RR.compose({X[0]: Z[0], X[1]: Z[1], X[2]: Z[2], X[3]: Z[3], X[4]: Z[4],
+                      Y[0]: Y[0], Y[1]: Y[1], Y[2]: Y[2], Y[3]: Y[3], Y[4]: Y[4]})
 
 
+    # print()
+    # print(bdd2expr(RR_1))
+    # print()
+    # print(bdd2expr(RR_2))
+    # print()
 
+    # use smoothing on RR_1 & RR_2 to find all pairs of nodes, connected by two
+    RR2 = (RR_1 & RR_2).smoothing(Z)
+    print("RR2: {}".format(bdd2expr(RR2)))
 
-
-    return 0
+    return RR2
 
 if __name__ == "__main__":
     main()
