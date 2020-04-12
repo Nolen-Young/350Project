@@ -1,18 +1,32 @@
+################################################################
+# Nolen Young, id: 11517296, email: nolen.young@wsu.edu
+# CptS 350 project
+################################################################
+
+
 from pyeda.inter import *
 
 def main():
-    #create BDD's for R, [EVEN], and [PRIME]
-    RR = generateRR()
-    EVEN = generateEVEN()
-    PRIME = generatePRIME()
+    # step 3.1
+    # create BDD's for R, [EVEN], and [PRIME]
+    RR = computeRR()
+    EVEN = computeEVEN()
+    PRIME = computePRIME()
 
+    # step 3.2
+    # find the value of R composed R.
     RR2 = RComposeR(RR)
+
+    # step 3.3
+    # find the transitive closure of RR2, RR2star
+    RR2star = computeRR2star(RR2)
+    print(RR2star.is_one())
 
 
     return 0
 
-# generates the EVEN BDD
-def generateEVEN():
+# computes the EVEN BDD
+def computeEVEN():
     # create our domain
     X = exprvars('x', 5)
     iterX = list(iter_points(X))
@@ -43,8 +57,8 @@ def generateEVEN():
     bdd = expr2bdd(boolExp)
     return bdd
 
-# generates the PRIME BDD
-def generatePRIME():
+# computes the PRIME BDD
+def computePRIME():
     # create our domain
     X = exprvars('x', 5)
     iterX = list(iter_points(X))
@@ -97,8 +111,8 @@ def isPrime(n):
 
     return True
 
-# generates the edges BDD
-def generateRR():
+# computes the edges BDD
+def computeRR():
     # create our domain
     X = exprvars('x', 5)
     Y = exprvars('y', 5)
@@ -124,7 +138,7 @@ def generateRR():
                                         itemY[Y[0]]), 2) % 2**5
 
             # test to see if it fits our edge condition
-            if ((x + 3) % 32 == y % 32):
+            if (((x + 3) % 32 == y % 32) | ((x + 8) % 32 == y % 32)):
                 # if it is an edge in our graph, add its edge to the boolean expression
                 # that we are building.
                 temp = "("
@@ -145,7 +159,7 @@ def generateRR():
                 boolExpString = "{} {}".format(boolExpString, temp)
 
     boolExp = expr(boolExpString[:-2])
-    print("R: {}".format(boolExp))
+    print("RR: {}".format(boolExp))
     bdd = expr2bdd(boolExp)
     return bdd
 
@@ -173,8 +187,51 @@ def RComposeR(RR):
     # use smoothing on RR_1 & RR_2 to find all pairs of nodes, connected by two
     RR2 = (RR_1 & RR_2).smoothing(Z)
     print("RR2: {}".format(bdd2expr(RR2)))
-
     return RR2
+
+def computeRR2star(RR2):
+    H = RR2
+    Hprime = H
+
+    # Hprime = H
+    # H = Hprime | compose(Hprime, RR2)
+
+    while H.equivalent(Hprime):
+    #while H != Hprime:
+        Hprime = H
+        H = Hprime | compose(Hprime, RR2)
+
+    print("RR2star: {}".format(bdd2expr(H)))
+
+    return H
+
+## return R composed R
+def compose(RR1, RR2):
+    # declare domain
+    X = bddvars('x', 5)
+    Y = bddvars('y', 5)
+    Z = bddvars('z', 5)
+
+    # use compose to rename two new RR BDDs.
+    RR_1 = RR1.compose({X[0]: X[0], X[1]: X[1], X[2]: X[2], X[3]: X[3], X[4]: X[4],
+                      Y[0]: Z[0], Y[1]: Z[1], Y[2]: Z[2], Y[3]: Z[3], Y[4]: Z[4]})
+
+    RR_2 = RR2.compose({X[0]: Z[0], X[1]: Z[1], X[2]: Z[2], X[3]: Z[3], X[4]: Z[4],
+                      Y[0]: Y[0], Y[1]: Y[1], Y[2]: Y[2], Y[3]: Y[3], Y[4]: Y[4]})
+
+
+    # print()
+    # print(bdd2expr(RR_1))
+    # print()
+    # print(bdd2expr(RR_2))
+    # print()
+
+
+
+    # use smoothing on RR_1 & RR_2 to find all pairs of nodes, connected by two
+    composite = (RR_1 & RR_2).smoothing(Z)
+    print("Composite: {}".format(bdd2expr(composite)))
+    return composite
 
 if __name__ == "__main__":
     main()
