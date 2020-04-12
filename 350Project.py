@@ -27,9 +27,9 @@ def main():
         print("Since RR2star is a tautology, AKA, its true for every possible input combinations,\n"
               "Every node can reach every other node in an even number of steps!")
     elif RR2star.is_zero():
-        print("Since RR2star is 0, there are no nodes that can reach eachother in an even number of steps")
+        print("Since RR2star is 0, there are no nodes that can reach each other in an even number of steps")
     else:
-        print("Nodes that can reach eachother in an even number of steps")
+        print("Nodes that can reach each other in an even number of steps: {}".format(bdd2expr(RR2star)))
 
 
     return 0
