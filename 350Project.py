@@ -150,7 +150,15 @@ def generateRR():
 
 ## return R composed R
 def RComposeR(RR):
-    print(list(RR.iter_relation()))
+
+    iterRR = list(RR.iter_relation())
+    for item in iterRR:
+        if item[1]:
+            print(item[0])
+            print(RR.smoothing(item[0]))
+
+
+
 
 
     return 0
