@@ -6,6 +6,7 @@ def main():
     EVEN = generateEVEN()
     PRIME = generatePRIME()
 
+    RR2 = RComposeR(RR)
 
     return 0
 
@@ -146,6 +147,13 @@ def generateRR():
     print("R: {}".format(boolExp))
     bdd = expr2bdd(boolExp)
     return bdd
+
+## return R composed R
+def RComposeR(RR):
+    print(list(RR.iter_relation()))
+
+
+    return 0
 
 if __name__ == "__main__":
     main()
