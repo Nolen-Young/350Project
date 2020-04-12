@@ -31,29 +31,34 @@ def main():
     else:
         print("Nodes that can reach each other in an even number of steps: {}".format(bdd2expr(RR2star)))
 
+    # step 3.4
+    # compute PE
+    PE = EVEN & PRIME & RR2star
+    print("PE: {}".format(bdd2expr(PE)))
+
 
     return 0
 
 # computes the EVEN BDD
 def computeEVEN():
     # create our domain
-    X = exprvars('x', 5)
-    iterX = list(iter_points(X))
+    Y = exprvars('y', 5)
+    iterY = list(iter_points(Y))
 
     boolExpString = ""
 
-    for itemX in iterX:
+    for itemY in iterY:
         # find unsigned 5 bit int representations of the boolean variables
-        x = int("{}{}{}{}{}".format(itemX[X[4]],
-                                    itemX[X[3]],
-                                    itemX[X[2]],
-                                    itemX[X[1]],
-                                    itemX[X[0]]), 2) % 2 ** 5
+        x = int("{}{}{}{}{}".format(itemY[Y[4]],
+                                    itemY[Y[3]],
+                                    itemY[Y[2]],
+                                    itemY[Y[1]],
+                                    itemY[Y[0]]), 2) % 2 ** 5
 
         if x % 2 == 0:
             temp = "("
-            for key in itemX:
-                if (itemX[key] == 0):
+            for key in itemY:
+                if (itemY[key] == 0):
                     temp = "{}{}".format(temp, "~{} & ".format(key))
                 else:
                     temp = "{}{}".format(temp, "{} & ".format(key))
