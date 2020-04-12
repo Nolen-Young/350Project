@@ -3,7 +3,6 @@
 # CptS 350 project
 ################################################################
 
-
 from pyeda.inter import *
 
 def main():
@@ -20,6 +19,13 @@ def main():
     # step 3.3
     # find the transitive closure of RR2, RR2star
     RR2star = computeRR2star(RR2)
+    if RR2star.is_one():
+        print("Since RR2star is a tautology, AKA, its true for every possible input combinations,\n"
+              "Every node can reach every other node in an even number of steps!")
+    elif RR2star.is_zero():
+        print("Since RR2star is 0, there are no nodes that can reach eachother in an even number of steps")
+    else:
+        print("Nodes that can reach eachother in an even number of steps")
 
 
     return 0
@@ -136,8 +142,11 @@ def computeRR():
                                         itemY[Y[1]],
                                         itemY[Y[0]]), 2) % 2**5
 
+
+
             # test to see if it fits our edge condition
             if (((x + 3) % 32 == y % 32) | ((x + 8) % 32 == y % 32)):
+                print("({}, {})".format(x, y))
                 # if it is an edge in our graph, add its edge to the boolean expression
                 # that we are building.
                 temp = "("
@@ -188,29 +197,34 @@ def RComposeR(RR):
     print("RR2: {}".format(bdd2expr(RR2)))
     return RR2
 
-def computeRR2star(RR2):
-    H = RR2
-    Hprime = H
+def computeRR2star( RR2):
+    # RR = bdd2expr(RR)
+    # RR2 = bdd2expr(RR2)
 
-    Hprime = H
-    H = compose(Hprime, RR2)
+    Hprime = RR2
+
+    # first round of transitive closure
+    H = Hprime | compose(Hprime, RR2)
 
     while Not(H.equivalent(Hprime)):
     #while H != Hprime:
         Hprime = H
-        H = (Hprime | compose(Hprime, RR2))
-        print(H)
+        H = Hprime | compose(Hprime, RR2)
 
-    print("RR2star: {}".format(bdd2expr(H)))
+    print("Finished RR2star")
 
     return H
 
 ## return R composed R
 def compose(RR1, RR2):
     # declare domain
+    # X = exprvars('x', 5)
+    # Y = exprvars('y', 5)
+    # Z = exprvars('z', 5)
     X = bddvars('x', 5)
     Y = bddvars('y', 5)
     Z = bddvars('z', 5)
+
 
     # use compose to rename two new RR BDDs.
     RR_1 = RR1.compose({X[0]: X[0], X[1]: X[1], X[2]: X[2], X[3]: X[3], X[4]: X[4],
@@ -230,7 +244,7 @@ def compose(RR1, RR2):
 
     # use smoothing on RR_1 & RR_2 to find all pairs of nodes, connected by two
     composite = (RR_1 & RR_2).smoothing(Z)
-    print("Composite: {}".format(bdd2expr(composite)))
+    #print("Composite: {}".format(composite))
     return composite
 
 if __name__ == "__main__":
