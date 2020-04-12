@@ -1,6 +1,10 @@
 ################################################################
 # Nolen Young, id: 11517296, email: nolen.young@wsu.edu
 # CptS 350 project
+#
+# Appears to be working correctly to me, but my results are not what I expected.
+# I believe the code to be correct, but something may be wrong. If there is something wrong
+# with my results, please refer to my comment at computeRR2star() function definition.
 ################################################################
 
 from pyeda.inter import *
@@ -146,7 +150,6 @@ def computeRR():
 
             # test to see if it fits our edge condition
             if (((x + 3) % 32 == y % 32) | ((x + 8) % 32 == y % 32)):
-                print("({}, {})".format(x, y))
                 # if it is an edge in our graph, add its edge to the boolean expression
                 # that we are building.
                 temp = "("
@@ -197,25 +200,31 @@ def RComposeR(RR):
     print("RR2: {}".format(bdd2expr(RR2)))
     return RR2
 
+# This computes RR2star according to our class notes
+# I have verified RR2 is correct, by hand, so my composition function,
+# compose(), does work. The code is written exactly along with the pseudo-code
+# written in class. However, the result it gets says that all RR2star is a
+# tautology. This means that all nodes can reach all other nodes in an even number
+# of steps. This is a suprise to me, and I am not sure if it is correct.
 def computeRR2star( RR2):
     # RR = bdd2expr(RR)
     # RR2 = bdd2expr(RR2)
+
 
     Hprime = RR2
 
     # first round of transitive closure
     H = Hprime | compose(Hprime, RR2)
-
     while Not(H.equivalent(Hprime)):
     #while H != Hprime:
         Hprime = H
         H = Hprime | compose(Hprime, RR2)
 
-    print("Finished RR2star")
+    print("RR2star: {}".format(bdd2expr(H)))
 
     return H
 
-## return R composed R
+# return RR1 composed RR2
 def compose(RR1, RR2):
     # declare domain
     # X = exprvars('x', 5)
