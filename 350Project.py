@@ -2,9 +2,14 @@
 # Nolen Young, id: 11517296, email: nolen.young@wsu.edu
 # CptS 350 project
 #
+# Python version: 3.6
+# pyeda version: 0.28
+#
 # Appears to be working correctly to me, but my results are not what I expected.
 # I believe the code to be correct, but something may be wrong. If there is something wrong
 # with my results, please refer to my comment at computeRR2star() function definition.
+#
+# You can find my answer to section 4 of the project in README.md
 ################################################################
 
 from pyeda.inter import *
@@ -39,8 +44,38 @@ def main():
     # step 3.5
     res = computeStatementA(PRIME, PE)
 
+    # step 4
+    # TESTS
+    if test(res):
+        print("All tests Passed")
+        return 0
+    else:
+        print("All tests Failed")
+        return 1
 
-    return 0
+def test(res):
+    X = bddvars('x', 5)
+    Y = bddvars('y', 5)
+
+    # for x = 5 and y = 16
+    res.restrict({X[0]: 1, X[1]: 0, X[2]: 1, X[3]: 0, X[4]: 0,
+        Y[0]: 0, Y[1]: 0, Y[2]: 0, Y[3]: 0, Y[4]: 1})
+    if ~res:
+        print("Test(u = 5 and v = 16): Failed")
+        return 0
+    print("Test(u = 5 and v = 16): Pass")
+
+    # x = 5, y = 4
+    res.restrict({X[0]: 1, X[1]: 0, X[2]: 1, X[3]: 0, X[4]: 0,
+                  Y[0]: 0, Y[1]: 0, Y[2]: 1, Y[3]: 0, Y[4]: 0})
+    if res.is_zero():
+        print("Test(u = 5 and v = 4): False")
+    print("Test(u = 5 and v = 4): True")
+
+    # following the above pattern, I can write any number of tests,
+    # for any number of x and y values.
+
+    return 1
 
 # computes the EVEN BDD
 def computeEVEN():
